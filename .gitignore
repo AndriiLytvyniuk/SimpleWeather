@@ -1,0 +1,29 @@
+/bin/
+/gen/
+/target/
+unittestresults.txt
+.classpath
+.project
+gen-external-apklibs/
+.DS_Store
+
+# Android generated
+bin
+gen
+libs
+obj
+lint.xml
+
+# IntelliJ IDEA
+.idea
+*.iml
+*.ipr
+*.iws
+
+# Gradle
+.gradle
+build
+out
+
+local.properties
+/artifacts
