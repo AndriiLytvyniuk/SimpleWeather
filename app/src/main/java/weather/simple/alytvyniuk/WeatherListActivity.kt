@@ -1,4 +1,4 @@
-package weather.simple.alytvyniuk.simpleweather
+package weather.simple.alytvyniuk
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity;
