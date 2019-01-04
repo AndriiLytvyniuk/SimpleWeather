@@ -1,6 +1,6 @@
 package weather.simple.alytvyniuk.serverapi.model
 
-data class CitiGroupWeather(
+data class CityGroupWeather(
     val cnt: Int,
     val list: List<CityWeather>
 )

@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 
 import kotlinx.android.synthetic.main.activity_weather_list.*
+import weather.simple.alytvyniuk.serverapi.model.City
 
 class WeatherListActivity : AppCompatActivity() {
 
@@ -13,6 +14,13 @@ class WeatherListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_weather_list)
         setSupportActionBar(toolbar)
+    }
+
+    private fun getCityList() : List<City> {
+        return listOf(City("Kiev", 703448),
+            City("London", 2643743),
+            City("Toronto", 6167865)
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
