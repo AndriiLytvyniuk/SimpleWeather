@@ -1,32 +1,57 @@
 package weather.simple.alytvyniuk.serverapi.retrofit
 
 import android.support.annotation.VisibleForTesting
+import android.util.Log
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import weather.simple.alytvyniuk.serverapi.AbstractServerApi
 import weather.simple.alytvyniuk.serverapi.ServerApi
 import weather.simple.alytvyniuk.serverapi.model.City
+import weather.simple.alytvyniuk.serverapi.model.CityGroupWeather
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 
-class RetrofitApi : AbstractServerApi() {
+
+class RetrofitApi {
 
     private val service : WeatherRetrofitService
 
-    companion object {
-        val instance = RetrofitApi()
-    }
-
     init {
+        val logging = HttpLoggingInterceptor()
+        logging.level = HttpLoggingInterceptor.Level.BODY
+
+        val httpClient = OkHttpClient.Builder()
+        httpClient.addInterceptor(logging)
         val retrofit = Retrofit.Builder()
             .baseUrl(ServerApi.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
+            .client(httpClient.build())
             .build()
         service = retrofit.create(WeatherRetrofitService::class.java)
     }
 
-    override fun requestCityGroupWeather(listener: ServerApi.ServerApiListener, vararg cities: City) {
-        super.requestCityGroupWeather(listener, *cities)
+    fun requestCityGroupWeather(listener: ServerApi.ServerApiListener, vararg cities: City) {
         val citiesString = getCitesString(*cities)
-        service.getCityGroupWeather(citiesString)
+        Log.d("Andrii", ": requestCityGroupWeather")
+        service.getCityGroupWeather(citiesString).enqueue(object : Callback<CityGroupWeather> {
+            override fun onFailure(call: Call<CityGroupWeather>, t: Throwable) {
+                Log.e("Andrii", ": onFailure", t)
+                listener.onError()
+            }
+
+            override fun onResponse(call: Call<CityGroupWeather>, response: Response<CityGroupWeather>) {
+                Log.d("Andrii", ": onResponse")
+                val result = response.body()?.list
+                //TODO Think of success condition
+                if (result == null) {
+                    listener.onError()
+                } else {
+                    listener.onSuccess(result)
+                }
+            }
+        })
     }
 
     @VisibleForTesting
