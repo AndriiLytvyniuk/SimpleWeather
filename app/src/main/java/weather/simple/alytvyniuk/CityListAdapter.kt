@@ -5,14 +5,19 @@ import android.support.v7.widget.RecyclerView.Adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.squareup.picasso.Picasso
 import weather.simple.alytvyniuk.serverapi.model.CityWeatherDisplayed
 import kotlinx.android.synthetic.main.city_list_item.view.*
 
 class CityListAdapter : Adapter<CityListAdapter.CityItemHolder>() {
 
+    companion object {
+        private const val BASE_IMAGES_URL = "http://openweathermap.org/img/w/"
+    }
+
     private var cityWeathers : List<CityWeatherDisplayed> = listOf()
 
-    public fun setCityWeathers(list : List<CityWeatherDisplayed>) {
+    fun setCityWeathers(list : List<CityWeatherDisplayed>) {
         cityWeathers = list
     }
 
@@ -33,6 +38,9 @@ class CityListAdapter : Adapter<CityListAdapter.CityItemHolder>() {
             itemView.tv_city.text = itemView.context.getString(R.string.city_country, item.cityName, item.countryCode)
             itemView.tv_temperature.text = itemView.context.getString(R.string.temperature, item.temperature)
             itemView.tv_weather.text = item.weatherCondition
+            Picasso.get()
+                .load(BASE_IMAGES_URL + item.weatherIconId + ".png")
+                .into(itemView.iv_weather_icon)
         }
     }
 }
