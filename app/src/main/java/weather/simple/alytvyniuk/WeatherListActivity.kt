@@ -1,16 +1,16 @@
 package weather.simple.alytvyniuk
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_weather_list.*
-import weather.simple.alytvyniuk.serverapi.ServerApi
 import weather.simple.alytvyniuk.serverapi.model.City
 import weather.simple.alytvyniuk.serverapi.model.CityWeatherDisplayed
-import android.support.v7.widget.DividerItemDecoration
 
 
 class WeatherListActivity : AppCompatActivity() {
@@ -33,22 +33,18 @@ class WeatherListActivity : AppCompatActivity() {
         )
         adapter = CityListAdapter()
         cities_list_view.adapter = adapter
-        requestWeather()
+        updateWeather()
     }
 
-    private fun requestWeather() {
+    private fun updateWeather() {
         val cityList = getCityList()
-        ServerApi.instance.requestCityGroupWeather(object : ServerApi.ServerApiListener {
-            override fun onSuccess(weathers: List<CityWeatherDisplayed>) {
+        val model = ViewModelProviders.of(this).get(WeatherListViewModel::class.java)
+        model.getWeatherDisplayed(cityList).observe(this, Observer<List<CityWeatherDisplayed>> { weathers ->
+            if (weathers != null) {
                 adapter.setCityWeathers(weathers)
                 adapter.notifyDataSetChanged()
             }
-
-            override fun onError() {
-                Log.d(TAG, ": error")
-            }
-
-        }, *cityList.toTypedArray())
+        })
     }
 
     private fun getCityList() : List<City> {
@@ -66,7 +62,7 @@ class WeatherListActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_refresh -> {
-                requestWeather()
+                updateWeather()
                 true
             }
             else -> super.onOptionsItemSelected(item)
