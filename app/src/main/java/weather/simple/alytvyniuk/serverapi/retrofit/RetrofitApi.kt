@@ -11,6 +11,8 @@ import weather.simple.alytvyniuk.serverapi.model.City
 import weather.simple.alytvyniuk.serverapi.model.CityGroupWeather
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import weather.simple.alytvyniuk.serverapi.model.CityWeather
+import weather.simple.alytvyniuk.serverapi.model.CityWeatherDisplayed
 
 
 class RetrofitApi {
@@ -44,11 +46,19 @@ class RetrofitApi {
                 if (result == null) {
                     listener.onError()
                 } else {
-                    listener.onSuccess(result)
+                    listener.onSuccess(cityWeatherToCityWeatherDisplayed(result))
                 }
             }
         })
     }
+
+    fun cityWeatherToCityWeatherDisplayed(weatherList: List<CityWeather>) =
+        weatherList.map {
+            CityWeatherDisplayed(it.name,
+                it.sys.country,
+                it.weather[0].description,
+                Math.round(it.main.temp).toInt(),
+                it.weather[0].icon) }
 
     @VisibleForTesting
     fun getCitesString(vararg cities: City)

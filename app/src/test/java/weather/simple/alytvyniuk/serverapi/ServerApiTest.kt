@@ -5,7 +5,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test
 import weather.simple.alytvyniuk.serverapi.model.City
-import weather.simple.alytvyniuk.serverapi.model.CityWeather
+import weather.simple.alytvyniuk.serverapi.model.CityWeatherDisplayed
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -17,7 +17,7 @@ class ServerApiTest {
         val result = arrayOf(false)
         val latch = CountDownLatch(1)
         ServerApi.instance.requestCityGroupWeather(object : ServerApi.ServerApiListener {
-            override fun onSuccess(weathers: List<CityWeather>) {
+            override fun onSuccess(weathers: List<CityWeatherDisplayed>) {
                 Assert.assertEquals(weathers.size, cityList.size)
                 result[0] = true
                 latch.countDown()

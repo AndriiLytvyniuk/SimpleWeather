@@ -1,7 +1,7 @@
 package weather.simple.alytvyniuk.serverapi
 
 import weather.simple.alytvyniuk.serverapi.model.City
-import weather.simple.alytvyniuk.serverapi.model.CityWeather
+import weather.simple.alytvyniuk.serverapi.model.CityWeatherDisplayed
 import weather.simple.alytvyniuk.serverapi.retrofit.RetrofitApi
 import java.lang.IllegalArgumentException
 
@@ -23,7 +23,7 @@ class ServerApi private constructor() {
     }
 
     interface ServerApiListener {
-        fun onSuccess(weathers : List<CityWeather>)
+        fun onSuccess(weathers : List<CityWeatherDisplayed>)
         fun onError()
     }
 }
