@@ -52,13 +52,18 @@ class RetrofitApi {
         })
     }
 
-    fun cityWeatherToCityWeatherDisplayed(weatherList: List<CityWeather>) =
-        weatherList.map {
-            CityWeatherDisplayed(it.name,
+    fun cityWeatherToCityWeatherDisplayed(weatherList: List<CityWeather>) : List<CityWeatherDisplayed> {
+        val time = System.currentTimeMillis()
+        return weatherList.map {
+            CityWeatherDisplayed(
+                it.name,
                 it.sys.country,
                 it.weather[0].description,
                 Math.round(it.main.temp).toInt(),
-                it.weather[0].icon) }
+                it.weather[0].icon,
+                time)
+        }
+    }
 
     @VisibleForTesting
     fun getCitesString(vararg cities: City)

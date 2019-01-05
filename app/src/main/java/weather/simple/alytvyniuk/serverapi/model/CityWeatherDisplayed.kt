@@ -1,7 +1,13 @@
 package weather.simple.alytvyniuk.serverapi.model
 
-data class CityWeatherDisplayed(val cityName : String,
-                                val countryCode : String,
-                                val weatherCondition : String,
-                                val temperature : Int,
-                                val weatherIconId : String)
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
+data class CityWeatherDisplayed(@PrimaryKey val cityName : String,
+                                @ColumnInfo val countryCode : String,
+                                @ColumnInfo val weatherCondition : String,
+                                @ColumnInfo val temperature : Int,
+                                @ColumnInfo val weatherIconId : String,
+                                @ColumnInfo val time : Long)
