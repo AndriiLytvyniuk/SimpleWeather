@@ -1,7 +1,6 @@
 package weather.simple.alytvyniuk.serverapi.retrofit
 
 import android.support.annotation.VisibleForTesting
-import android.util.Log
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,15 +33,12 @@ class RetrofitApi {
 
     fun requestCityGroupWeather(listener: ServerApi.ServerApiListener, vararg cities: City) {
         val citiesString = getCitesString(*cities)
-        Log.d("Andrii", ": requestCityGroupWeather")
         service.getCityGroupWeather(citiesString).enqueue(object : Callback<CityGroupWeather> {
             override fun onFailure(call: Call<CityGroupWeather>, t: Throwable) {
-                Log.e("Andrii", ": onFailure", t)
                 listener.onError()
             }
 
             override fun onResponse(call: Call<CityGroupWeather>, response: Response<CityGroupWeather>) {
-                Log.d("Andrii", ": onResponse")
                 val result = response.body()?.list
                 //TODO Think of success condition
                 if (result == null) {
