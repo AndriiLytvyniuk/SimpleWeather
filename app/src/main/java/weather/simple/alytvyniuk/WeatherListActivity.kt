@@ -6,12 +6,12 @@ import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import com.squareup.picasso.OkHttp3Downloader
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_weather_list.*
 import weather.simple.alytvyniuk.serverapi.ServerApi
 import weather.simple.alytvyniuk.serverapi.model.City
 import weather.simple.alytvyniuk.serverapi.model.CityWeatherDisplayed
+import android.support.v7.widget.DividerItemDecoration
+
 
 class WeatherListActivity : AppCompatActivity() {
 
@@ -22,10 +22,15 @@ class WeatherListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initPicasso()
         setContentView(R.layout.activity_weather_list)
         setSupportActionBar(toolbar)
         cities_list_view.layoutManager = LinearLayoutManager(this)
+        cities_list_view.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                DividerItemDecoration.VERTICAL
+            )
+        )
         adapter = CityListAdapter()
         cities_list_view.adapter = adapter
         requestWeather()
@@ -44,15 +49,6 @@ class WeatherListActivity : AppCompatActivity() {
             }
 
         }, *cityList.toTypedArray())
-    }
-
-    private fun initPicasso() {
-        val builder = Picasso.Builder(this)
-        builder.downloader(OkHttp3Downloader(this, Integer.MAX_VALUE.toLong()))
-        val built = builder.build()
-        built.setIndicatorsEnabled(true)
-        built.isLoggingEnabled = true
-        Picasso.setSingletonInstance(built)
     }
 
     private fun getCityList() : List<City> {

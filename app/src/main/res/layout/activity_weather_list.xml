@@ -6,6 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:background="@android:color/darker_gray"
         tools:context=".WeatherListActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -21,6 +22,18 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
     </android.support.design.widget.AppBarLayout>
+
+    <TextView
+            android:id="@+id/tv_offline_time"
+            android:paddingStart="@dimen/side_margin"
+            android:drawableStart="@drawable/ic_offline"
+            android:gravity="center_vertical"
+            android:background="@color/yellow_light"
+            android:text="@string/offline_mode"
+            android:paddingBottom="2dp"
+            android:paddingTop="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     <android.support.v7.widget.RecyclerView
             android:id="@+id/cities_list_view"
