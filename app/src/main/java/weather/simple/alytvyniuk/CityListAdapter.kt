@@ -1,7 +1,7 @@
 package weather.simple.alytvyniuk
 
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.Adapter
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,7 +32,7 @@ class CityListAdapter : Adapter<CityListAdapter.CityItemHolder>() {
         return LayoutInflater.from(context).inflate(layoutRes, this, false)
     }
 
-    class CityItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class CityItemHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
 
         fun bind(item : CityWeatherDisplayed) {
             itemView.tv_city.text = itemView.context.getString(R.string.city_country, item.cityName, item.countryCode)

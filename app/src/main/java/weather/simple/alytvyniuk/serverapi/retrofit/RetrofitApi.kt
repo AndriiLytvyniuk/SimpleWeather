@@ -1,6 +1,6 @@
 package weather.simple.alytvyniuk.serverapi.retrofit
 
-import android.support.annotation.VisibleForTesting
+import androidx.annotation.VisibleForTesting
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
