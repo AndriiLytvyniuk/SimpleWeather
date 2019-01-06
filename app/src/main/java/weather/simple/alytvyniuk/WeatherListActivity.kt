@@ -10,6 +10,9 @@ import android.view.View
 import androidx.annotation.NonNull
 import kotlinx.android.synthetic.main.activity_weather_list.*
 import weather.simple.alytvyniuk.serverapi.model.City
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 
 class WeatherListActivity : AppCompatActivity() {
@@ -36,7 +39,8 @@ class WeatherListActivity : AppCompatActivity() {
         model = ViewModelProviders.of(this).get(WeatherListViewModel::class.java)
         model.citiesWeather.observe(this, Observer<@NonNull WeatherListViewModel.ResponseWrapper> { responseWrapper ->
             showProgress(false)
-            showNoNetworkLayout(responseWrapper.hasNetworkError, 0)
+            val time = if (responseWrapper.data.isNotEmpty()) responseWrapper.data[0].time else null
+            showNoNetworkLayout(responseWrapper.hasNetworkError, time)
             adapter.setCityWeathers(responseWrapper.data)
             adapter.notifyDataSetChanged()
         })
@@ -55,8 +59,17 @@ class WeatherListActivity : AppCompatActivity() {
         invalidateOptionsMenu()
     }
 
-    private fun showNoNetworkLayout(shouldShow : Boolean, time : Long) {
+    private fun showNoNetworkLayout(shouldShow : Boolean, time : Long?) {
         if (shouldShow) {
+            if (time == null) {
+                tv_offline_time.text = getString(R.string.offline_mode)
+            } else {
+                val calendar = Calendar.getInstance()
+                calendar.time = Date(time)
+                val hours = calendar.get(Calendar.HOUR_OF_DAY)
+                val minutes = calendar.get(Calendar.MINUTE)
+                tv_offline_time.text = getString(R.string.offline_mode_with_time, hours, minutes)
+            }
             tv_offline_time.visibility = View.VISIBLE
         } else {
             tv_offline_time.visibility = View.GONE

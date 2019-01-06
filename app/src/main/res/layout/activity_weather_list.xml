@@ -32,6 +32,7 @@
 
     <TextView
             android:id="@+id/tv_offline_time"
+            android:visibility="gone"
             android:paddingStart="@dimen/side_margin"
             android:drawableStart="@drawable/ic_offline"
             android:gravity="center_vertical"
