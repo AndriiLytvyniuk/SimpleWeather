@@ -5,40 +5,56 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import weather.simple.alytvyniuk.db.WeatherDB
 import weather.simple.alytvyniuk.serverapi.ServerApi
 import weather.simple.alytvyniuk.serverapi.model.City
 import weather.simple.alytvyniuk.serverapi.model.CityWeatherDisplayed
 
 class WeatherListViewModel(application : Application) : AndroidViewModel(application) {
-    private lateinit var citiesWeather: MutableLiveData<List<CityWeatherDisplayed>>
-    val weatherDB = Room.databaseBuilder(
+    val citiesWeather: MutableLiveData<ResponseWrapper>  = MutableLiveData()
+    private val weatherDB = Room.databaseBuilder(
         application,
         WeatherDB::class.java, "weather"
-    ).allowMainThreadQueries().build()
+    ).build()
 
-    fun getWeatherDisplayed(cities: List<City>): LiveData<List<CityWeatherDisplayed>> {
-        if (!::citiesWeather.isInitialized) {
-            citiesWeather = MutableLiveData()
-            val fromDB = weatherDB.getWeatherDao().getAll()
-            citiesWeather.value = fromDB
-            loadWeatherList(cities)
-        }
+    fun requestWeatherDisplayed(cities: List<City>): LiveData<ResponseWrapper> {
+        downloadWeatherList(cities)
         return citiesWeather
     }
 
-    private fun loadWeatherList(cities: List<City>) {
+    private fun downloadWeatherList(cities: List<City>) {
         ServerApi.instance.requestCityGroupWeather(object : ServerApi.ServerApiListener {
             override fun onSuccess(weathers: List<CityWeatherDisplayed>) {
-                weatherDB.getWeatherDao().insertAll(weathers)
-                citiesWeather.value = weathers
+                saveWeather(weathers)
+                citiesWeather.value = ResponseWrapper(weathers, false)
             }
 
             override fun onError() {
-
+                loadWeatherFromDB()
             }
 
         }, *cities.toTypedArray())
     }
+
+    private fun saveWeather(weathers: List<CityWeatherDisplayed>) {
+        Single.fromCallable {
+            weatherDB.getWeatherDao().insertAll(weathers)
+        }.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread()).subscribe()
+    }
+
+    private fun loadWeatherFromDB() {
+        weatherDB.getWeatherDao().getAll()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { weathers ->
+                citiesWeather.value = ResponseWrapper(weathers, true)
+            }
+    }
+
+    data class ResponseWrapper (val data : List<CityWeatherDisplayed>, val hasNetworkError : Boolean)
 
 }
