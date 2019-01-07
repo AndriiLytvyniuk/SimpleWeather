@@ -35,7 +35,7 @@ class SimpleWeatherApplication : Application() {
         jobScheduler.schedule(
             JobInfo.Builder(1, ComponentName(this, WeatherJobService::class.java))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPeriodic(TimeUnit.MINUTES.toMillis(5))
+                .setPeriodic(TimeUnit.HOURS.toMillis(1))
                 .build()
         )
     }

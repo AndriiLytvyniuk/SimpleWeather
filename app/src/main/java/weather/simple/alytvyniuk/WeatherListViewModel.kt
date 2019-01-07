@@ -56,7 +56,6 @@ class WeatherListViewModel(application : Application) : AndroidViewModel(applica
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { weathers ->
                 citiesWeather.value = ResponseWrapper(weathers, true)
-                compositeDisposable.dispose()
             }
         compositeDisposable.addAll(disposable)
     }

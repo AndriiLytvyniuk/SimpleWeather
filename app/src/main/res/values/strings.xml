@@ -4,5 +4,5 @@
     <string name="city_country">%1$s, %2$s</string>
     <string name="temperature">%1$d\u00B0</string>
     <string name="offline_mode">No network available</string>
-    <string name="offline_mode_with_time">Offline mode. The weather was actual at %1$d:%2$d</string>
+    <string name="offline_mode_with_time">Offline mode. The weather was actual at %1$d:%2$s</string>
 </resources>

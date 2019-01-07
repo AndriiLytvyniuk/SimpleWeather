@@ -66,7 +66,8 @@ class WeatherListActivity : AppCompatActivity() {
                 calendar.time = Date(time)
                 val hours = calendar.get(Calendar.HOUR_OF_DAY)
                 val minutes = calendar.get(Calendar.MINUTE)
-                tv_offline_time.text = getString(R.string.offline_mode_with_time, hours, minutes)
+                val minutesString = if (minutes < 10) "0$minutes" else "$minutes"
+                tv_offline_time.text = getString(R.string.offline_mode_with_time, hours, minutesString)
             }
             tv_offline_time.visibility = View.VISIBLE
         } else {
