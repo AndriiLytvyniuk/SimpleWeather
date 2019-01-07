@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.room.Room
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -13,15 +12,17 @@ import weather.simple.alytvyniuk.db.WeatherDB
 import weather.simple.alytvyniuk.serverapi.ServerApi
 import weather.simple.alytvyniuk.serverapi.model.City
 import weather.simple.alytvyniuk.serverapi.model.CityWeatherDisplayed
+import javax.inject.Inject
 
 class WeatherListViewModel(application : Application) : AndroidViewModel(application) {
     val citiesWeather: MutableLiveData<ResponseWrapper>  = MutableLiveData()
-    private var compositeDisposable = CompositeDisposable()
+    private val compositeDisposable = CompositeDisposable()
+    @Inject lateinit var weatherDB : WeatherDB
+    @Inject lateinit var serverApi: ServerApi
 
-    private val weatherDB = Room.databaseBuilder(
-        application,
-        WeatherDB::class.java, "weather"
-    ).build()
+    init {
+        SimpleWeatherApplication.getWeatherComponent().inject(this)
+    }
 
     fun requestWeatherDisplayed(cities: List<City>): LiveData<ResponseWrapper> {
         downloadWeatherList(cities)
@@ -29,7 +30,7 @@ class WeatherListViewModel(application : Application) : AndroidViewModel(applica
     }
 
     private fun downloadWeatherList(cities: List<City>) {
-        ServerApi.instance.requestCityGroupWeather(object : ServerApi.ServerApiListener {
+        serverApi.requestCityGroupWeather(object : ServerApi.ServerApiListener {
             override fun onSuccess(weathers: List<CityWeatherDisplayed>) {
                 saveWeather(weathers)
                 citiesWeather.value = ResponseWrapper(weathers, false)

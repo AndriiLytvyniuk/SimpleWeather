@@ -3,7 +3,6 @@ package weather.simple.alytvyniuk
 import android.app.job.JobParameters
 import android.app.job.JobService
 import android.util.Log
-import androidx.room.Room
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -13,6 +12,7 @@ import weather.simple.alytvyniuk.db.WeatherDB
 import weather.simple.alytvyniuk.serverapi.ServerApi
 import weather.simple.alytvyniuk.serverapi.model.City
 import weather.simple.alytvyniuk.serverapi.model.CityWeatherDisplayed
+import javax.inject.Inject
 
 class WeatherJobService : JobService() {
 
@@ -20,26 +20,27 @@ class WeatherJobService : JobService() {
         private const val TAG = "WeatherJobService"
     }
 
+    init {
+        SimpleWeatherApplication.getWeatherComponent().inject(this)
+    }
+
+    @Inject lateinit var weatherDB : WeatherDB
+    @Inject lateinit var serverApi: ServerApi
     private var compositeDisposable = CompositeDisposable()
 
     override fun onStartJob(params: JobParameters?): Boolean {
         Log.d(TAG, "onStartJob")
-        val weatherDB = Room.databaseBuilder(
-            application,
-            WeatherDB::class.java, "weather"
-        ).build()
-
         val disposable = weatherDB.getWeatherDao().getAll()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { weatherCities ->
-                ServerApi.instance.requestCityGroupWeather(object : ServerApi.ServerApiListener {
+                serverApi.requestCityGroupWeather(object : ServerApi.ServerApiListener {
                     override fun onError() {
                         jobFinished(params, true)
                     }
 
                     override fun onSuccess(weathers: List<CityWeatherDisplayed>) {
-                        saveWeather(weatherDB, weathers, params)
+                        saveWeather(weathers, params)
                     }
                 }, weatherCities.map { City(it.cityName, it.cityCode) })
             }
@@ -47,9 +48,9 @@ class WeatherJobService : JobService() {
         return true
     }
 
-    private fun saveWeather(db: WeatherDB, weathers: List<CityWeatherDisplayed>, params: JobParameters?) {
+    private fun saveWeather(weathers: List<CityWeatherDisplayed>, params: JobParameters?) {
         val disposable = Single.fromCallable {
-            db.getWeatherDao().insertAll(weathers)
+            weatherDB.getWeatherDao().insertAll(weathers)
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()).subscribe(Consumer<Unit> {
                 Log.d(TAG, "weather saved")
