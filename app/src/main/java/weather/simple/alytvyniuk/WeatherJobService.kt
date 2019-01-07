@@ -2,6 +2,7 @@ package weather.simple.alytvyniuk
 
 import android.app.job.JobParameters
 import android.app.job.JobService
+import android.util.Log
 import androidx.room.Room
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -15,9 +16,14 @@ import weather.simple.alytvyniuk.serverapi.model.CityWeatherDisplayed
 
 class WeatherJobService : JobService() {
 
+    companion object {
+        private const val TAG = "WeatherJobService"
+    }
+
     private var compositeDisposable = CompositeDisposable()
 
     override fun onStartJob(params: JobParameters?): Boolean {
+        Log.d(TAG, "onStartJob")
         val weatherDB = Room.databaseBuilder(
             application,
             WeatherDB::class.java, "weather"
@@ -34,7 +40,6 @@ class WeatherJobService : JobService() {
 
                     override fun onSuccess(weathers: List<CityWeatherDisplayed>) {
                         saveWeather(weatherDB, weathers, params)
-                        jobFinished(params, true)
                     }
                 }, *weatherCities.map { City(it.cityName, it.cityCode) }.toTypedArray())
             }
@@ -46,7 +51,10 @@ class WeatherJobService : JobService() {
         val disposable = Single.fromCallable {
             db.getWeatherDao().insertAll(weathers)
         }.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread()).subscribe(Consumer<Unit> { jobFinished(params, true) })
+            .observeOn(AndroidSchedulers.mainThread()).subscribe(Consumer<Unit> {
+                Log.d(TAG, "weather saved")
+                jobFinished(params, true)
+            })
         compositeDisposable.addAll(disposable)
     }
 
