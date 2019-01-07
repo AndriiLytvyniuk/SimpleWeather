@@ -15,11 +15,11 @@ class ServerApi private constructor() {
     }
     private val api = RetrofitApi()
 
-    fun requestCityGroupWeather(listener: ServerApi.ServerApiListener, vararg cities: City) {
+    fun requestCityGroupWeather(listener: ServerApi.ServerApiListener, cities: List<City>) {
         if (cities.size > MAX_GROUP_REQUEST_NUMBER) {
             throw IllegalArgumentException("Max group request can be $MAX_GROUP_REQUEST_NUMBER")
         }
-        api.requestCityGroupWeather(listener, *cities)
+        api.requestCityGroupWeather(listener, cities)
     }
 
     interface ServerApiListener {

@@ -39,7 +39,7 @@ class WeatherListViewModel(application : Application) : AndroidViewModel(applica
                 loadWeatherFromDB()
             }
 
-        }, *cities.toTypedArray())
+        }, cities)
     }
 
     private fun saveWeather(weathers: List<CityWeatherDisplayed>) {

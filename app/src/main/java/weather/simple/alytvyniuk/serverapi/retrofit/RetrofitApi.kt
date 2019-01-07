@@ -33,8 +33,8 @@ class RetrofitApi {
         service = retrofit.create(WeatherRetrofitService::class.java)
     }
 
-    fun requestCityGroupWeather(listener: ServerApi.ServerApiListener, vararg cities: City) {
-        val citiesString = getCitesString(*cities)
+    fun requestCityGroupWeather(listener: ServerApi.ServerApiListener, cities: List<City>) {
+        val citiesString = getCitesString(cities)
         service.getCityGroupWeather(citiesString).enqueue(object : Callback<CityGroupWeather> {
             override fun onFailure(call: Call<CityGroupWeather>, t: Throwable) {
                 listener.onError()
@@ -67,7 +67,7 @@ class RetrofitApi {
     }
 
     @VisibleForTesting
-    fun getCitesString(vararg cities: City)
+    fun getCitesString(cities: List<City>)
             = cities.map { it.id }.joinToString(",")
 
 }

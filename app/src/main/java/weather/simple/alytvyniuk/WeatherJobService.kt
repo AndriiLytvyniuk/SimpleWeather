@@ -41,7 +41,7 @@ class WeatherJobService : JobService() {
                     override fun onSuccess(weathers: List<CityWeatherDisplayed>) {
                         saveWeather(weatherDB, weathers, params)
                     }
-                }, *weatherCities.map { City(it.cityName, it.cityCode) }.toTypedArray())
+                }, weatherCities.map { City(it.cityName, it.cityCode) })
             }
         compositeDisposable.addAll(disposable)
         return true
