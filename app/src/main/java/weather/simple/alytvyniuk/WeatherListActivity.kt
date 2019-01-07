@@ -10,8 +10,6 @@ import android.view.View
 import androidx.annotation.NonNull
 import kotlinx.android.synthetic.main.activity_weather_list.*
 import weather.simple.alytvyniuk.serverapi.model.City
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 

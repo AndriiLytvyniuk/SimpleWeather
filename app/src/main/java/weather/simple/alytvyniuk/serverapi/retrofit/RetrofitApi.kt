@@ -56,6 +56,7 @@ class RetrofitApi {
         val time = System.currentTimeMillis()
         return weatherList.map {
             CityWeatherDisplayed(
+                it.id,
                 it.name,
                 it.sys.country,
                 it.weather[0].description,

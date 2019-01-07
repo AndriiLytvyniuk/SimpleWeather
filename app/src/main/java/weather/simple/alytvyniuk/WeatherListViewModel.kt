@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import weather.simple.alytvyniuk.db.WeatherDB
 import weather.simple.alytvyniuk.serverapi.ServerApi
@@ -15,6 +16,8 @@ import weather.simple.alytvyniuk.serverapi.model.CityWeatherDisplayed
 
 class WeatherListViewModel(application : Application) : AndroidViewModel(application) {
     val citiesWeather: MutableLiveData<ResponseWrapper>  = MutableLiveData()
+    private var compositeDisposable = CompositeDisposable()
+
     private val weatherDB = Room.databaseBuilder(
         application,
         WeatherDB::class.java, "weather"
@@ -47,14 +50,21 @@ class WeatherListViewModel(application : Application) : AndroidViewModel(applica
     }
 
     private fun loadWeatherFromDB() {
-        weatherDB.getWeatherDao().getAll()
+        val disposable = weatherDB.getWeatherDao().getAll()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { weathers ->
                 citiesWeather.value = ResponseWrapper(weathers, true)
+                compositeDisposable.dispose()
             }
+        compositeDisposable.addAll(disposable)
     }
 
     data class ResponseWrapper (val data : List<CityWeatherDisplayed>, val hasNetworkError : Boolean)
+
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.dispose()
+    }
 
 }
