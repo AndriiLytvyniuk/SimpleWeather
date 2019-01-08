@@ -8,30 +8,20 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
+ * Simple test to check if layout with connection error apears
  */
-
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class ChangeTextBehaviorTest {
-
-    private lateinit var stringToBetyped: String
+class OfflineModeTest {
 
     @get:Rule
     var activityRule: ActivityTestRule<WeatherListActivity>
             = ActivityTestRule(WeatherListActivity::class.java)
-
-    @Before
-    fun initValidString() {
-    }
 
     @Test
     fun testOfflineModeActivity() {

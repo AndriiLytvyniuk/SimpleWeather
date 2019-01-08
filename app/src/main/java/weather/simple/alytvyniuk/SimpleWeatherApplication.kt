@@ -31,6 +31,7 @@ class SimpleWeatherApplication : Application() {
         Log.d(TAG, "onCreate")
         weatherComponent = DaggerWeatherComponent.builder().weatherModule(WeatherModule(this)).build()
         initPicasso()
+        //launch weather update job every hour
         val jobScheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
         jobScheduler.schedule(
             JobInfo.Builder(1, ComponentName(this, WeatherJobService::class.java))
@@ -40,6 +41,9 @@ class SimpleWeatherApplication : Application() {
         )
     }
 
+    /**
+     * add disk cache with [OkHttp3Downloader]
+     */
     private fun initPicasso() {
         Picasso.setSingletonInstance(
             Picasso.Builder(applicationContext)

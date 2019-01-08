@@ -14,6 +14,9 @@ import weather.simple.alytvyniuk.serverapi.model.City
 import weather.simple.alytvyniuk.serverapi.model.CityWeatherDisplayed
 import javax.inject.Inject
 
+/**
+ * Request new weather data every hour and updates database
+ */
 class WeatherJobService : JobService() {
 
     companion object {

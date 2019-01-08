@@ -8,7 +8,7 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(modules = [WeatherModule::class])
-public interface WeatherComponent {
+interface WeatherComponent {
     fun inject(@NonNull weatherListViewModel: WeatherListViewModel)
     fun inject(@NonNull weatherJobService: WeatherJobService)
 }

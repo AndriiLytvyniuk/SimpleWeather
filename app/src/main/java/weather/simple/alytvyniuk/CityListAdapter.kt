@@ -1,6 +1,5 @@
 package weather.simple.alytvyniuk
 
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import android.view.LayoutInflater
 import android.view.View

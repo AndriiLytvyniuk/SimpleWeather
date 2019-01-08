@@ -1,5 +1,6 @@
 package weather.simple.alytvyniuk.serverapi.retrofit
 
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import retrofit2.Call
 import retrofit2.Callback
@@ -16,6 +17,10 @@ import weather.simple.alytvyniuk.serverapi.model.CityWeatherDisplayed
 
 
 class RetrofitApi {
+
+    companion object {
+        private const val TAG = "RetrofitApi"
+    }
 
     private val service : WeatherRetrofitService
 
@@ -37,6 +42,7 @@ class RetrofitApi {
         val citiesString = getCitesString(cities)
         service.getCityGroupWeather(citiesString).enqueue(object : Callback<CityGroupWeather> {
             override fun onFailure(call: Call<CityGroupWeather>, t: Throwable) {
+                Log.e("Andrii", "onError", t)
                 listener.onError()
             }
 

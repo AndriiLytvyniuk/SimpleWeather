@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.NonNull
+import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_weather_list.*
 import weather.simple.alytvyniuk.serverapi.model.City
 import java.util.*
@@ -25,7 +26,7 @@ class WeatherListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_weather_list)
         setSupportActionBar(toolbar)
-        cities_list_view.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        cities_list_view.layoutManager = LinearLayoutManager(this)
         cities_list_view.addItemDecoration(
             androidx.recyclerview.widget.DividerItemDecoration(
                 this,
@@ -62,12 +63,8 @@ class WeatherListActivity : AppCompatActivity() {
             if (time == null) {
                 tv_offline_time.text = getString(R.string.offline_mode)
             } else {
-                val calendar = Calendar.getInstance()
-                calendar.time = Date(time)
-                val hours = calendar.get(Calendar.HOUR_OF_DAY)
-                val minutes = calendar.get(Calendar.MINUTE)
-                val minutesString = if (minutes < 10) "0$minutes" else "$minutes"
-                tv_offline_time.text = getString(R.string.offline_mode_with_time, hours, minutesString)
+                val hoursMinuteString = getHoursMinuteString(time)
+                tv_offline_time.text = getString(R.string.offline_mode_with_time, hoursMinuteString)
             }
             tv_offline_time.visibility = View.VISIBLE
         } else {
@@ -75,6 +72,19 @@ class WeatherListActivity : AppCompatActivity() {
         }
     }
 
+    fun getHoursMinuteString(time : Long) : String {
+        val calendar = Calendar.getInstance()
+        calendar.time = Date(time)
+        val hours = calendar.get(Calendar.HOUR_OF_DAY)
+        val minutes = calendar.get(Calendar.MINUTE)
+        val minutesString = if (minutes < 10) "0$minutes" else "$minutes"
+        return "$hours:$minutesString"
+    }
+
+    /**
+     * Stub method to get hardcoded values
+     * TODO Replace with real data
+     */
     private fun getCityList() : List<City> {
         return listOf(City("Kiev", 703448),
             City("London", 2643743),

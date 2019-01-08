@@ -10,6 +10,9 @@ import weather.simple.alytvyniuk.serverapi.IServerApi
 import weather.simple.alytvyniuk.serverapi.model.City
 import javax.inject.Singleton
 
+/**
+ * Test implementation of [WeatherModule]
+ */
 @Module
 class WeatherModule(private val application: Application) {
 
