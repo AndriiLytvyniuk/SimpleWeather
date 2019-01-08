@@ -9,7 +9,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import weather.simple.alytvyniuk.db.WeatherDB
-import weather.simple.alytvyniuk.serverapi.ServerApi
+import weather.simple.alytvyniuk.serverapi.IServerApi
 import weather.simple.alytvyniuk.serverapi.model.City
 import weather.simple.alytvyniuk.serverapi.model.CityWeatherDisplayed
 import javax.inject.Inject
@@ -25,7 +25,7 @@ class WeatherJobService : JobService() {
     }
 
     @Inject lateinit var weatherDB : WeatherDB
-    @Inject lateinit var serverApi: ServerApi
+    @Inject lateinit var serverApi: IServerApi
     private var compositeDisposable = CompositeDisposable()
 
     override fun onStartJob(params: JobParameters?): Boolean {
@@ -34,15 +34,17 @@ class WeatherJobService : JobService() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { weatherCities ->
-                serverApi.requestCityGroupWeather(object : ServerApi.ServerApiListener {
-                    override fun onError() {
-                        jobFinished(params, true)
-                    }
+                if (!weatherCities.isEmpty()) {
+                    serverApi.requestCityGroupWeather(object : IServerApi.ServerApiListener {
+                        override fun onError() {
+                            jobFinished(params, true)
+                        }
 
-                    override fun onSuccess(weathers: List<CityWeatherDisplayed>) {
-                        saveWeather(weathers, params)
-                    }
-                }, weatherCities.map { City(it.cityName, it.cityCode) })
+                        override fun onSuccess(weathers: List<CityWeatherDisplayed>) {
+                            saveWeather(weathers, params)
+                        }
+                    }, weatherCities.map { City(it.cityName, it.cityCode) })
+                }
             }
         compositeDisposable.addAll(disposable)
         return true

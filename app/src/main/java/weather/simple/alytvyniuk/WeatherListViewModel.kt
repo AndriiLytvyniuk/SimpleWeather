@@ -9,7 +9,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import weather.simple.alytvyniuk.db.WeatherDB
-import weather.simple.alytvyniuk.serverapi.ServerApi
+import weather.simple.alytvyniuk.serverapi.IServerApi
 import weather.simple.alytvyniuk.serverapi.model.City
 import weather.simple.alytvyniuk.serverapi.model.CityWeatherDisplayed
 import javax.inject.Inject
@@ -18,7 +18,7 @@ class WeatherListViewModel(application : Application) : AndroidViewModel(applica
     val citiesWeather: MutableLiveData<ResponseWrapper>  = MutableLiveData()
     private val compositeDisposable = CompositeDisposable()
     @Inject lateinit var weatherDB : WeatherDB
-    @Inject lateinit var serverApi: ServerApi
+    @Inject lateinit var serverApi: IServerApi
 
     init {
         SimpleWeatherApplication.getWeatherComponent().inject(this)
@@ -30,7 +30,7 @@ class WeatherListViewModel(application : Application) : AndroidViewModel(applica
     }
 
     private fun downloadWeatherList(cities: List<City>) {
-        serverApi.requestCityGroupWeather(object : ServerApi.ServerApiListener {
+        serverApi.requestCityGroupWeather(object : IServerApi.ServerApiListener {
             override fun onSuccess(weathers: List<CityWeatherDisplayed>) {
                 saveWeather(weathers)
                 citiesWeather.value = ResponseWrapper(weathers, false)

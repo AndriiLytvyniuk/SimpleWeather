@@ -9,7 +9,7 @@ class RetrofitApiTest {
 
     @Test
     fun getCitesStringTest() {
-        val s = RetrofitApi().getCitesString(*getCityList().toTypedArray())
+        val s = RetrofitApi().getCitesString(getCityList())
         assertEquals("703448,2643743,6167865", s)
     }
 

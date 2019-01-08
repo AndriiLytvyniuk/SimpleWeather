@@ -6,11 +6,11 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import weather.simple.alytvyniuk.serverapi.ServerApi
 import weather.simple.alytvyniuk.serverapi.model.City
 import weather.simple.alytvyniuk.serverapi.model.CityGroupWeather
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import weather.simple.alytvyniuk.serverapi.IServerApi
 import weather.simple.alytvyniuk.serverapi.model.CityWeather
 import weather.simple.alytvyniuk.serverapi.model.CityWeatherDisplayed
 
@@ -26,14 +26,14 @@ class RetrofitApi {
         val httpClient = OkHttpClient.Builder()
         httpClient.addInterceptor(logging)
         val retrofit = Retrofit.Builder()
-            .baseUrl(ServerApi.BASE_URL)
+            .baseUrl(IServerApi.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(httpClient.build())
             .build()
         service = retrofit.create(WeatherRetrofitService::class.java)
     }
 
-    fun requestCityGroupWeather(listener: ServerApi.ServerApiListener, cities: List<City>) {
+    fun requestCityGroupWeather(listener: IServerApi.ServerApiListener, cities: List<City>) {
         val citiesString = getCitesString(cities)
         service.getCityGroupWeather(citiesString).enqueue(object : Callback<CityGroupWeather> {
             override fun onFailure(call: Call<CityGroupWeather>, t: Throwable) {
@@ -42,7 +42,6 @@ class RetrofitApi {
 
             override fun onResponse(call: Call<CityGroupWeather>, response: Response<CityGroupWeather>) {
                 val result = response.body()?.list
-                //TODO Think of success condition
                 if (result == null) {
                     listener.onError()
                 } else {

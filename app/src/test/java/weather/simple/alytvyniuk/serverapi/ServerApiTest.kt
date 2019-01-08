@@ -16,7 +16,7 @@ class ServerApiTest {
         val cityList = getCityList()
         val result = arrayOf(false)
         val latch = CountDownLatch(1)
-        ServerApi.instance.requestCityGroupWeather(object : ServerApi.ServerApiListener {
+        ServerApi.instance.requestCityGroupWeather(object : IServerApi.ServerApiListener {
             override fun onSuccess(weathers: List<CityWeatherDisplayed>) {
                 Assert.assertEquals(weathers.size, cityList.size)
                 result[0] = true
@@ -28,7 +28,7 @@ class ServerApiTest {
                 fail()
             }
 
-        }, *cityList.toTypedArray())
+        }, cityList)
         latch.await(3, TimeUnit.SECONDS)
         assertTrue(result[0])
     }

@@ -7,7 +7,7 @@ import dagger.Module
 import dagger.Provides
 import weather.simple.alytvyniuk.db.WeatherDB
 import weather.simple.alytvyniuk.serverapi.IServerApi
-import weather.simple.alytvyniuk.serverapi.ServerApi
+import weather.simple.alytvyniuk.serverapi.model.City
 import javax.inject.Singleton
 
 @Module
@@ -17,7 +17,11 @@ class WeatherModule(private val application: Application) {
     @NonNull
     @Singleton
     fun provideServerApi() : IServerApi {
-        return ServerApi.instance
+        return object: IServerApi {
+            override fun requestCityGroupWeather(listener: IServerApi.ServerApiListener, cities: List<City>) {
+                listener.onError()
+            }
+        }
     }
 
     @Provides
